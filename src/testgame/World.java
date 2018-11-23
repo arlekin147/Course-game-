@@ -66,6 +66,7 @@ public class World{
     public final FabricBlock fb;
     ArrayList<Entity> entityes;
     public static final int blockSize = 20;
+    public static final int limV  = 1; //Block per second
     static Random gen = new Random();
     Block[][] map;
     final int length = 5000;
@@ -115,7 +116,7 @@ public class World{
     		A.x <= Bbr.x &&
     		A.y <= Bbr.y
     	   ) return true;
-    	else return false;
+    	 return false;
     }
     
     public void spawn(Item item) {
@@ -209,39 +210,39 @@ public class World{
     	
     
     	try {
-    	if(this.map[(int)smth.ul.y][(int)(smth.br.x)].getBlockId() == 1 &&  //BR
-    			this.map[(int)smth.ul.y][(int)smth.ul.x].getBlockId() == 1 &&
-    					this.map[(int)smth.ul.y][(int)(smth.br.x + smth.ul.x)/2].getBlockId() == 1) {
-    			smth.vy = 0; 
-					smth.isJumping = false;
-				}
+   
     			
     	
     	switch(smth.getDerection()) {
+    	//LEFT
     	case 0 :
-    		if(!(smth.isMove() && !(this.map[(int)(smth.br.y - 0.3) ][(int)smth.ul.x] instanceof SolidBlock) &&// insctaneof SolidBlock 
-    							  !(this.map[(int)(smth.ul.y + 0.3)][(int)smth.ul.x] instanceof SolidBlock ) &&
-    					       	  !(this.map[(int)((smth.ul.y + smth.br.y)/2)][(int)smth.ul.x] instanceof SolidBlock)))
+    		if(((this.map[(int)(smth.br.y - 0.1) ][(int)(smth.ul.x + smth.getVX())] instanceof SolidBlock) ||// ul
+    			(this.map[(int)(smth.br.y - 1)][(int)(smth.ul.x + smth.getVX())] instanceof SolidBlock )   ||
+    			(this.map[(int)(smth.ul.y + 0.1)][(int)(smth.ul.x + smth.getVX())] instanceof SolidBlock ) ||
+    			(this.map[(int)((smth.ul.y + 1))][(int)(smth.ul.x + smth.getVX())] instanceof SolidBlock)))
     					//smth.setVX(-0.1);
 					//else 
+    		{
 						smth.setVX(0);
+						//System.out.println("----SETTING VELOCITY X TO ZER0");
+    		}
     		break;
+    		//RIGHT
     	case 1:
-    		if(!(smth.isMove() && !(this.map[(int)(smth.br.y - 0.3) ][(int)smth.br.x] instanceof SolidBlock) &&
-			!(this.map[(int)(smth.ul.y + 0.3)][(int)smth.br.x] instanceof SolidBlock) &&
-					!(this.map[(int)((smth.ul.y + smth.br.y)/2)][(int)smth.br.x] instanceof SolidBlock)))
+    		if((  (this.map[(int)(smth.br.y - 0.1) ][(int)(smth.br.x + smth.getVX())] instanceof SolidBlock) ||
+			      (this.map[(int)(smth.br.y - 1)][(int)(smth.br.x + smth.getVX())] instanceof SolidBlock)    ||
+			      (this.map[(int)(smth.ul.y + 0.1)][(int)(smth.br.x + smth.getVX())] instanceof SolidBlock)  ||
+				  (this.map[(int)(smth.ul.y + 1)][(int)(smth.br.x + smth.getVX())] instanceof SolidBlock)))
 				/*smth.setVX(0.1);
 			else */
+    		{
 				smth.setVX(0);
+				//System.out.println("---SOLID BLOCK RIGHT TO ME");
+    		}
     		break;
     	case 2 :
 	    	{
-	        		if(!( !(this.map[(int)(smth.br.y - 0.3) ][(int)smth.ul.x] instanceof SolidBlock) &&// insctaneof SolidBlock 
-	        			  !(this.map[(int)(smth.ul.y + 0.3)][(int)smth.ul.x] instanceof SolidBlock ) &&
-	        			  !(this.map[(int)((smth.ul.y + smth.br.y)/2)][(int)smth.ul.x] instanceof SolidBlock)))
-	        					//smth.setVX(-0.1);
-	    					//else 
-	    						smth.setVX(0);
+	        		
 	    	}
     		break;
     	case 3 :
@@ -249,53 +250,54 @@ public class World{
     		default : {
     		}
     	}
-    	if(this.map[(int)smth.br.y][(int)(smth.br.x - 0.15)].getBlockId() == 0 &&  //BR
-    			this.map[(int)smth.br.y][(int)(smth.ul.x + 0.15)].getBlockId() == 0 &&
-    					this.map[(int)smth.br.y][(int)(smth.br.x + smth.ul.x)/2].getBlockId() == 0) {
-    				
-    				
-    				
-    				smth.vy += Character.currentA;
-    			}
-    			else 
-    				{
-    				smth.vy = 0;
-    				smth.isJumping = false;
-    				}
-    	}catch(ArrayIndexOutOfBoundsException e) {
-    		smth.setVX(0);
-    		smth.setVY(0);  
-    	}
-    	
-    	
-    	/*if(this.map[(int)smth.br.y][(int)(smth.br.x - 0.15)].getBlockId() == 0 &&  //BR
-    			this.map[(int)smth.br.y][(int)(smth.ul.x + 0.15)].getBlockId() == 0 &&
-    					this.map[(int)smth.br.y][(int)(smth.br.x + smth.ul.x)/2].getBlockId() == 0) {
-    				
-    				
-    				
-    			smth.vy += Character.currentA;
-    	}
-    	else 
-    		{
-    			smth.vy = 0;
-    		    smth.isJumping = false;
-    		}
-    	
-    	if(!smth.isJumping) {
-    		smth.isJumping = true;
-			smth.vy -= 27 * Character.currentA;
-    	}*/
-    	
-    	
     	
     	if(smth.isJumpNeeded ) {
     		if(!smth.isJumping) 
     			smth.vy -= 27 * Character.currentA;
-    			smth.derection = 2;
     		smth.isJumping = true;
     		smth.isJumpNeeded = false;
     	}
+    	
+    	
+    	//UP
+    	if (smth.getVY() < 0)
+    	//JUMP MODULE
+    	if(((this.map[(int)(smth.ul.y + smth.getVY() - 0.01)][(int)(smth.ul.x + 0.1)] instanceof SolidBlock) ||// insctaneof SolidBlock 
+   			(this.map[(int)(smth.ul.y + smth.getVY() - 0.01)][(int)(smth.br.x - 0.1)] instanceof SolidBlock ) ||
+   			(this.map[(int)(smth.ul.y + smth.getVY() - 0.01)][(int)(smth.ul.x + smth.br.x)/2] instanceof SolidBlock)))
+   					//smth.setVX(-0.1);
+					//else 
+    	{
+			smth.setVY(0);
+			//System.out.println("----SETTING VELOCITY Y TO ZER0");
+    	}
+    	
+    	//DOWN
+    	if(this.map[(int)(smth.br.y + smth.getVY())][(int)(smth.br.x - 0.15)].getBlockId() == 0 &&  //BR
+    	   this.map[(int)(smth.br.y + smth.getVY())][(int)(smth.ul.x + 0.15)].getBlockId() == 0 &&
+    	   this.map[(int)(smth.br.y + smth.getVY())][(int)(smth.br.x + smth.ul.x)/2].getBlockId() == 0) { 		
+    		
+    				if (smth.vy <= limV)
+    				{ 
+    				smth.vy += Character.currentA;
+    				//System.out.println("----SETTING VELOCITY Y TO " + smth.vy);
+    				}
+    				
+    				
+    			}
+    	else{
+    		
+    		double s =0;
+    		if(smth instanceof PC)
+    				System.out.println("s = " + s);
+    		smth.vy = s;
+    		smth.isJumping = false;
+    	}
+	    	}catch(ArrayIndexOutOfBoundsException e) {
+	    		smth.setVX(0);
+	    		smth.setVY(0);  
+	    	}
+    	
     	
     	
     	
@@ -354,7 +356,7 @@ public class World{
 
     public void update() {
     	
-    	int toDelete = 0;
+    	int toDelete = -1;
     	this.player.control(this);
     	this.player2.update();
     	//this.player2.move(0.01 , 0);
@@ -371,7 +373,7 @@ public class World{
 	    		}
     		}
     	}
-    	if (toDelete > 0) {
+    	if ((toDelete >= 0)&&this.entityes.size()!=0) {
     		this.player.giveItem((Item)this.entityes.get(toDelete));
     		this.entityes.remove(toDelete);
     	}
@@ -412,9 +414,9 @@ public class World{
     public void mapCOut(){
         for(int x  = 0; x < height; ++x){
             for(int y = 0; y < length; ++y){
-                System.out.print(this.map[x][y].getBlockId());
+               // System.out.print(this.map[x][y].getBlockId());
             }
-            System.out.println();
+           // System.out.println();
         }
     }
 

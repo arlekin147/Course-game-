@@ -1,9 +1,12 @@
 package testgame;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glTexCoord2d;
 import static org.lwjgl.opengl.GL11.glVertex2d;
@@ -15,6 +18,7 @@ public class Inventory {
      private Item[] items;
      private int firstFree;
      private Texture[] textures;
+     private final static int quickPanelSize = 10;
 
      public Inventory(int size)
      {
@@ -22,6 +26,7 @@ public class Inventory {
     	 for(int i = 0; i < 10; ++i) {
     		 this.textures[i] = new Texture("res/inventory_1" + (i+1) + "_active.png");
     	 }
+    	
          items = new Item[size];
          firstFree=0;
      }
@@ -33,7 +38,7 @@ public class Inventory {
      public void getNext(double a)
      {
     	int dir = (a>0)?1:-1;
-    	activeItem = (activeItem + dir)%items.length;
+    	activeItem = (activeItem + dir)%Inventory.quickPanelSize;
     	if (activeItem < 0) activeItem = 9;
     		 
      }
@@ -57,7 +62,7 @@ public class Inventory {
     		 if(it != null && it.itemId == item.itemId && it instanceof Stackable) {
     			 Stackable s = (BlockItem)it; //..... fuck
     			 added = s.stack();
-    			 System.out.println(added);
+    			// System.out.println(added);
     		 }
     	 }
     	 if(!added) {
@@ -112,6 +117,7 @@ public class Inventory {
      }
 
 	public void draw() {
+		 GL11.glDisable(GL_LIGHTING);
 		this.textures[this.activeItem].bind();
 		 glBegin(GL_QUADS); 
 	       
@@ -138,6 +144,7 @@ public class Inventory {
 	    		this.items[i].draw(new Coordinates(3.5*i + 2, 2), new Coordinates(3.5*i + 3, 3));
 	   }
 	        
+	    GL11.glEnable(GL_LIGHTING);
 		// i + 1,5, i + 1,5
 	}
 

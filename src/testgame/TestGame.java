@@ -21,6 +21,8 @@ import static org.lwjgl.system.MemoryUtil.*;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.lwjgl.glfw.GLFWScrollCallback;
+
+//import org.lwjgl.glfw.lig
 /**
  *
  * @author РђР»РµРєСЃР°РЅРґСЂ
@@ -113,8 +115,11 @@ public class TestGame {
 		GL.createCapabilities();
 		
 		
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_BLEND);
+      glEnable(GL_TEXTURE_2D);
+      glEnable(GL_BLEND);
+     
+      glEnable(GL_LIGHTING);
+      glEnable(GL_LIGHT2);
         glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
         
        world = new World(this.window);
@@ -132,8 +137,42 @@ public class TestGame {
                 
                 glMatrixMode(GL_PROJECTION); //РўР°Рє РЅР°РїРёСЃР°РЅРѕ РІ СѓСЂРѕРєРµ 
                 glLoadIdentity(); 
+              
                 glOrtho(0,WIDTH/World.blockSize,HEIGHT/World.blockSize,0,1,-1); 
                 glMatrixMode(GL_MODELVIEW);  //...
+                
+                //-------------------------------LIGHT
+           
+                FloatBuffer ambient = BufferUtils.createFloatBuffer(4);
+                ambient.put(new float[] { 1f, 1f, 1f, 1f, });
+                ambient.flip();    
+
+                FloatBuffer direction = BufferUtils.createFloatBuffer(4);
+                                                   //3 - радиус
+                direction.put(new float[] { 1f, 0f, 0.5f, 1f, });
+                direction.flip();    
+               
+
+               // glEnable(GL_LIGHTING);
+               // glEnable(GL_LIGHT1);
+              
+                //GL11.glLightf(1, GL_DIFFUSE, GL_POSITION);
+
+        
+             
+               
+                
+               
+                	glPushMatrix();
+               glLoadIdentity();
+               glTranslatef(TestGame.WIDTH/2/World.blockSize,(TestGame.HEIGHT/2  - 52)/World.blockSize, 0);
+
+                glLightfv(GL_LIGHT2, GL_DIFFUSE, ambient);
+                glLightfv(GL_LIGHT2, GL_AMBIENT, ambient);
+
+                glLightfv(GL_LIGHT2, GL_POSITION, direction);
+                glPopMatrix();
+            
                 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
@@ -147,7 +186,7 @@ public class TestGame {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 			switch(state) {
 			case 0:		
-				mainMenu.update(WIDTH,HEIGHT,this.window);
+				mainMenu.update(WIDTH,HEIGHT, this.window);
 
 				if (glfwGetMouseButton(this.window, 0) == 1) {
 					if(mainMenu.updateButtonPlay(window)) {
@@ -171,7 +210,7 @@ public class TestGame {
 					this.world.save();
 				}
 				if((glfwGetKey(window,GLFW_KEY_F5)) == 1) {
-					System.out.println("load");
+					//System.out.println("load");
 					this.world.load();
 				}
 				//testChar.move(this.world.blockSize , 0);

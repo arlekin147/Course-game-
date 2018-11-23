@@ -3,7 +3,7 @@ package testgame;
 import org.lwjgl.glfw.GLFW;
 
 
-public class Animation {
+public class Animation {//gg
 	private Texture[] frames;
 	private int texturePointer;
 	

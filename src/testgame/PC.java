@@ -3,6 +3,7 @@ package testgame;
 import org.lwjgl.*;
 
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
@@ -35,7 +36,7 @@ public class PC extends Character{
 	private long window;
 	private int power = 1;
 	private int currentItem;
-	private Inventory inventory = new Inventory(10);
+	private Inventory inventory = new Inventory(50);
 	
 	public PC(World observer ,long window, Animation pic, Coordinates ne,  Coordinates sw){
 		super(observer, pic , ne , sw);
@@ -209,6 +210,7 @@ public class PC extends Character{
     		this.animations[currentAnimation].bind();
     	}
     	
+		
 		//WJIEFJIWEF
     	
         glBegin(GL_QUADS); 
@@ -232,6 +234,6 @@ public class PC extends Character{
        
         glEnd();
         
-       
+			
 	}
 }
